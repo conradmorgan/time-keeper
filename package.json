@@ -3,12 +3,16 @@
   "version": "0.0.1",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "build": "build --win",
+    "ship": "build --win -p always"
   },
   "devDependencies": {
-    "electron": "^4.0.4"
+    "electron": "^4.0.4",
+    "electron-builder": "^20.38.5"
   },
   "dependencies": {
+    "electron-updater": "^4.0.6",
     "jquery": "^3.1.1"
-  }
+  },
+  "repository": "https://github.com/conradmorgan/time-keeper"
 }

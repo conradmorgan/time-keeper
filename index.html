@@ -51,8 +51,18 @@ button:disabled {
     color: #f00;
 }
     </style>
+    <script>
+        const ipcRenderer = require('electron').ipcRenderer;
+        // wait for an updateReady message
+        ipcRenderer.on('updateReady', function(event, text) {
+            // changes the text of the button
+            var container = document.getElementById('ready');
+            container.innerHTML = "new version ready!";
+        })
+    </script>
     </head>
     <body onload="main()">
+        <button id="ready" onclick="ipcRenderer.send('quitAndInstall')">no updates ready</button>
         <div class="row" id="top-buttons">
             <button class="row-elem" id="start" onclick="start()">
                 Start

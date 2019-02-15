@@ -1,0 +1,5 @@
+electron-builder.yml
+dist/
+node_modules/
+Time Keeper-linux-x64/
+Time Keeper-win32-x64/
