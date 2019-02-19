@@ -103,9 +103,9 @@ function init() {
 }
 
 function update() {
-    var d = Date.now() - beginTask + total
+    var d = Date.now() - beginTask
     var r = 1000 * 60 * Number($('#expected').prop('value')) - d + excess
-    $('#total').html(Math.round(d / 1000 / 60 * 100)/100)
+    $('#total').html(Math.round((d + total) / 1000 / 60 * 100)/100)
     setExcess(r)
 }
 
