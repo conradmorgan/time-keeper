@@ -3,66 +3,30 @@
     <head>
         <meta charset="UTF-8">
         <title>Time Keeper</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
         <script src="app.js"></script>
-    <style>
-* {
-    font-size: 21px;
-}
-body, html {
-    font-family: Arial, Helvetica, sans-serif;
-    padding: 0;
-    margin: 0;
-    height: 100%;
-    width: 100%;
-}
-.row {
-    display: flex;
-    margin: 4px;
-}
-.row-elem {
-    display: inline-block;
-    flex: 1 1 0;
-}
-#rt {
-    height: 5%;
-}
-#rt-label {
-    white-space: nowrap;
-}
-#expected {
-    margin: 4px;
-    max-width: 20%;
-    text-align: center;
-}
-#top-buttons {
-    height: 20%;
-    margin: 0;
-}
-#top-buttons > button {
-    font-size: 36px;
-}
-button:disabled {
-    color: #ccc;
-}
-#start:enabled {
-    color: #3c3;
-}
-#stop:enabled {
-    color: #f00;
-}
-    </style>
     <script>
-        const ipcRenderer = require('electron').ipcRenderer;
-        // wait for an updateReady message
-        ipcRenderer.on('updateReady', function(event, text) {
-            // changes the text of the button
-            var container = document.getElementById('ready');
-            container.innerHTML = "new version ready!";
-        })
+const ipcRenderer = require('electron').ipcRenderer;
+ipcRenderer.on('updateReady', (event, text) => {
+    document.getElementById('ready').hidden = false;
+    document.getElementById('progress').hidden = true;
+});
+ipcRenderer.on('downloadProgress', (event, percent) => {
+    var progress = document.getElementById('progress');
+    var progressBar = document.getElementById('progressBar');
+    var progressText = document.getElementById('progressText');
+    progress.hidden = false;
+    progressBar.value = percent;
+    progressText.innerHTML = 'Downloading Update: ' + Math.round(percent) + '%';
+});
     </script>
     </head>
-    <body onload="main()">
-        <button id="ready" onclick="ipcRenderer.send('quitAndInstall')">no updates ready</button>
+    <body onload="init()">
+        <div hidden="true" id="progress">
+            <progress id="progressBar" value="0" max="100"></progress>
+            <div id="progressText">Downloading Update</div>
+        </div>
+        <button hidden="true" id="ready" onclick="ipcRenderer.send('quitAndInstall')">Click here to upgrade</button>
         <div class="row" id="top-buttons">
             <button class="row-elem" id="start" onclick="start()">
                 Start
@@ -74,22 +38,36 @@ button:disabled {
                 Next
             </button>
         </div>
-        <div class="row" id="rt">
-            <div class="row-elem" id="rt-label"><strong>Recommended Time:</strong></div>
-            <input class="row-elem" id="expected" onclick="this.select();" value="1"></input>
-            <div class="row-elem">minutes</div>
+        <button onclick="newSession()" id="newSession">New Session</button>
+        <div class="row">
+            <div><strong>Recommended Time:&nbsp;</strong></div>
+            <div style="width: auto">
+                <input style="width: 50%" id="expected" onclick="this.select()" value="1"></input>
+                <div style="width: 50%; display: inline-block">minutes</div>
+            </div>
         </div>
         <div class="row">
-            <div class="row-elem"><strong>Tasks:</strong></div>
-            <div class="row-elem" id="tasks">0</div>
+            <div style="width: 25%"><strong>Tasks:</strong></div>
+            <div class="stat" id="tasks"></div>
+            <input class="stat-edit" id="tasks-edit" onclick="this.select()"></input>
         </div>
         <div class="row">
-            <div class="row-elem"><strong>Total:</strong></div>
-            <div class="row-elem" id="total"></div>
+            <div style="width: 25%"><strong>Total:</strong></div>
+            <div class="stat" id="total"></div>
+            <input class="stat-edit" id="total-edit" onclick="this.select()"></input>
+            <div>&nbsp;minutes</div>
         </div>
         <div class="row">
-            <div class="row-elem"><strong>Excess:</strong></div>
-            <div class="row-elem" id="excess"></div>
+            <div style="width: 25%"><strong>Excess:</strong></div>
+            <div class="stat" id="excess"></div>
+            <input class="stat-edit" id="excess-edit" onclick="this.select()"></input>
+            <div>&nbsp;minutes&nbsp;</div>
+            <div class="stat" style="width: auto" id="excessDir"></div>
+            <select class="stat-edit" id="aheadBehind">
+                <option value="ahead">ahead</option>
+                <option value="behind">behind</option>
+            </select>
         </div>
+        <button onclick="editLock()" id="editLock">Edit</button>
     </body>
 </html>
