@@ -24,11 +24,15 @@ function save() {
 }
 
 function read() {
-    var obj = JSON.parse(fs.readFileSync('data.txt'))
-    $('#expected').val(obj.expected)
-    tasks = obj.tasks
-    total = obj.total
-    excess = obj.excess
+    try {
+        var obj = JSON.parse(fs.readFileSync('data.txt'))
+        $('#expected').val(obj.expected)
+        tasks = obj.tasks
+        total = obj.total
+        excess = obj.excess
+    } catch {
+        save()
+    }
 }
 
 function editLock() {
