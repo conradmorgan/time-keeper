@@ -49,7 +49,7 @@ function editLock() {
         roundedExcess = Math.round(excess / 1000 / 60)
         $('#tasks-edit').val(tasks)
         $('#total-edit').val(roundedTotal)
-        $('#excess-edit').val(roundedExcess)
+        $('#excess-edit').val(Math.abs(roundedExcess))
         if (excess < 0) {
             $('#aheadBehind').val('behind')
         } else {
