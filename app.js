@@ -35,6 +35,9 @@ function read() {
     }
 }
 
+var roundedTotal
+var roundedExcess
+
 function editLock() {
     if ($('#editLock').html() === 'Edit') {
         $('#editLock').html('Lock')
@@ -42,9 +45,11 @@ function editLock() {
         $('#newSession').prop('disabled', true)
         $('.stat').hide()
         $('.stat-edit').show()
-        $('#tasks-edit').val(Math.round(tasks / 1000 / 60))
-        $('#total-edit').val(Math.round(total / 1000 / 60))
-        $('#excess-edit').val(Math.abs(Math.round(excess / 1000 / 60)))
+        roundedTotal = Math.round(total / 1000 / 60)
+        roundedExcess = Math.round(excess / 1000 / 60)
+        $('#tasks-edit').val(tasks)
+        $('#total-edit').val(roundedTotal)
+        $('#excess-edit').val(roundedExcess)
         if (excess < 0) {
             $('#aheadBehind').val('behind')
         } else {
@@ -57,10 +62,18 @@ function editLock() {
         $('.stat-edit').hide()
         $('#editLock').html('Edit')
         tasks = Number($('#tasks-edit').val())
-        total = Number($('#total-edit').val()) * 60 * 1000
-        excess = ($('#aheadBehind').val() == "ahead" ? 1 : -1) * Number($('#excess-edit').val()) * 60 * 1000
+        var newTotal = Number($('#total-edit').val())
+        var newExcess = ($('#aheadBehind').val() == "ahead" ? 1 : -1) * Number($('#excess-edit').val())
+        if (roundedExcess === newExcess) {
+            excess = (newExcess + roundedTotal - newTotal) * 60 * 1000
+        } else {
+            excess = newExcess * 60 * 1000
+        }
+        if (roundedTotal != newTotal) {
+            total = newTotal * 60 * 1000
+        }
         $('#tasks').html(tasks)
-        $('#total').html(Math.round(total / 1000 / 60))
+        $('#total').html(newTotal)
         setExcess(excess)
         save()
     }
